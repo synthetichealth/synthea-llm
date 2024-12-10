@@ -1,0 +1,1962 @@
+{
+  "name": "Hyperthyroidism",
+  "remarks": "Models the progression of hyperthyroidism with three different etiologies (Graves disease, toxic nodular goiter, and thyroiditis).",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Risk_Factors",
+      "requirement_number": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14",
+      "remarks": "Distributes patients into different hyperthyroidism cohorts based on age, gender, and presence of hyperthyroidism risk factors. Each cohort has a different probability of developing hyperthyroidism."
+    },
+    "Check_For_Risk_Factors": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "family_history_thyroid_disease",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "type_1_diabetes",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "pernicious_anemia",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "primary_adrenal_insufficiency",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "vitiligo",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "rheumatoid_arthritis",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "systemic_lupus_erythematosus",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "sjogrens_syndrome",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "celiac_disease",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "turner_syndrome",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "klinefelter_syndrome",
+                "operator": "==",
+                "value": "true"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "down_syndrome",
+                "operator": "==",
+                "value": "true"
+              }
+            ]
+          },
+          "transition": "Risk_Factors_Present",
+          "requirement_number": "14",
+          "remarks": "Checks if the patient has any of the listed risk factors for hyperthyroidism. If so, transitions to 'Risk_Factors_Present' to double the probability of developing hyperthyroidism. Otherwise, continues to 'Delay_Until_Hyperthyroidism'."
+        },
+        {
+          "transition": "Delay_Until_Hyperthyroidism",
+          "requirement_number": "14",
+          "remarks": "If the patient does not have any of the listed risk factors for hyperthyroidism, transitions to 'Delay_Until_Hyperthyroidism' to continue the module with the default probabilities."
+        }
+      ],
+      "remarks": "This state checks if the patient has any of the following risk factors for hyperthyroidism: family history of thyroid disease, type 1 diabetes, pernicious anemia, primary adrenal insufficiency, vitiligo, rheumatoid arthritis, systemic lupus erythematosus, Sjogren's syndrome, celiac disease, Turner syndrome, Klinefelter syndrome, or Down syndrome. If any of these risk factors are present, the probability of developing hyperthyroidism will be doubled in the next state."
+    },
+    "Risk_Factors_Present": {
+      "type": "SetAttribute",
+      "attribute": "hyperthyroidism_risk_factor",
+      "value": true,
+      "direct_transition": "Delay_Until_Hyperthyroidism",
+      "requirement_number": "14",
+      "remarks": "Sets the 'hyperthyroidism_risk_factor' attribute to 'true', indicating the presence of at least one risk factor for hyperthyroidism. This attribute will be used in the next state to double the probability of developing hyperthyroidism. Then transitions to 'Delay_Until_Hyperthyroidism'."
+    },
+    "Delay_Until_Hyperthyroidism": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 80,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": {
+            "attribute": "women_15_60_graves_disease_risk",
+            "default": 0.0135
+          },
+          "transition": "Graves_Disease",
+          "requirement_number": "1"
+        },
+        {
+          "distribution": {
+            "attribute": "women_15_60_toxic_nodular_goiter_risk",
+            "default": 0.003
+          },
+          "transition": "Toxic_Nodular_Goiter",
+          "requirement_number": "2"
+        },
+        {
+          "distribution": {
+            "attribute": "women_15_60_thyroiditis_risk",
+            "default": 0.0013
+          },
+          "transition": "Thyroiditis",
+          "requirement_number": "3"
+        },
+        {
+          "distribution": {
+            "attribute": "women_15_60_subclinical_hyperthyroidism_risk",
+            "default": 0.0182
+          },
+          "transition": "Subclinical_Hyperthyroidism",
+          "requirement_number": "13"
+        },
+        {
+          "distribution": {
+            "attribute": "women_60_plus_graves_disease_risk",
+            "default": 0.0077
+          },
+          "transition": "Graves_Disease",
+          "requirement_number": "4"
+        },
+        {
+          "distribution": {
+            "attribute": "women_60_plus_toxic_nodular_goiter_risk",
+            "default": 0.0036
+          },
+          "transition": "Toxic_Nodular_Goiter",
+          "requirement_number": "5"
+        },
+        {
+          "distribution": {
+            "attribute": "women_60_plus_thyroiditis_risk",
+            "default": 0.0007
+          },
+          "transition": "Thyroiditis",
+          "requirement_number": "6"
+        },
+        {
+          "distribution": {
+            "attribute": "women_60_plus_subclinical_hyperthyroidism_risk",
+            "default": 0.01078
+          },
+          "transition": "Subclinical_Hyperthyroidism",
+          "requirement_number": "13"
+        },
+        {
+          "distribution": {
+            "attribute": "men_15_60_graves_disease_risk",
+            "default": 0.0023
+          },
+          "transition": "Graves_Disease",
+          "requirement_number": "7"
+        },
+        {
+          "distribution": {
+            "attribute": "men_15_60_toxic_nodular_goiter_risk",
+            "default": 0.0005
+          },
+          "transition": "Toxic_Nodular_Goiter",
+          "requirement_number": "8"
+        },
+        {
+          "distribution": {
+            "attribute": "men_15_60_thyroiditis_risk",
+            "default": 0.0002
+          },
+          "transition": "Thyroiditis",
+          "requirement_number": "9"
+        },
+        {
+          "distribution": {
+            "attribute": "men_15_60_subclinical_hyperthyroidism_risk",
+            "default": 0.00322
+          },
+          "transition": "Subclinical_Hyperthyroidism",
+          "requirement_number": "13"
+        },
+        {
+          "distribution": {
+            "attribute": "men_60_plus_graves_disease_risk",
+            "default": 0.0013
+          },
+          "transition": "Graves_Disease",
+          "requirement_number": "10"
+        },
+        {
+          "distribution": {
+            "attribute": "men_60_plus_toxic_nodular_goiter_risk",
+            "default": 0.0006
+          },
+          "transition": "Toxic_Nodular_Goiter",
+          "requirement_number": "11"
+        },
+        {
+          "distribution": {
+            "attribute": "men_60_plus_thyroiditis_risk",
+            "default": 0.00012
+          },
+          "transition": "Thyroiditis",
+          "requirement_number": "12"
+        },
+        {
+          "distribution": {
+            "attribute": "men_60_plus_subclinical_hyperthyroidism_risk",
+            "default": 0.00168
+          },
+          "transition": "Subclinical_Hyperthyroidism",
+          "requirement_number": "13"
+        },
+        {
+          "distribution": {
+            "attribute": "no_hyperthyroidism_risk",
+            "default": 0.98042
+          },
+          "transition": "Terminal"
+        }
+      ],
+      "requirement_number": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14",
+      "remarks": "Delays until the patient reaches an age at which they may develop hyperthyroidism. Then, based on the calculated probability for the patient's age, gender, and risk factor cohort, the patient transitions to one of five states: Graves_Disease, Toxic_Nodular_Goiter, Thyroiditis, Subclinical_Hyperthyroidism, or Terminal. The probabilities for each cohort are based on epidemiological data. The presence of a hyperthyroidism risk factor doubles the default probability of developing hyperthyroidism. If the patient does not develop hyperthyroidism, they transition to the 'Terminal' state. The default probability for \"no_hyperthyroidism_risk\" has been adjusted to ensure all probabilities sum to 1. The probabilities for subclinical hyperthyroidism are 1.4 times those of overt hyperthyroidism."
+    },
+    "Graves_Disease": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hyperthyroidism_cause",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "35665009",
+          "display": "Graves' disease"
+        }
+      ],
+      "direct_transition": "Hyperthyroidism_Symptoms",
+      "requirement_number": "21",
+      "remarks": "Graves disease is an autoimmune disease that leads to overproduction of thyroid hormone. Assigns 'hyperthyroidism_cause' attribute to 'Graves_Disease', then transitions to Hyperthyroidism_Symptoms."
+    },
+    "Toxic_Nodular_Goiter": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Toxic_Nodular_Goiter_Onset"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Severe_Toxic_Nodular_Goiter_Onset"
+        }
+      ],
+      "requirement_number": "15",
+      "remarks": "Distributes toxic nodular goiter patients into mild/moderate (80%) or severe (20%) based on disease profile. Severe cases are those with large, suspicious, or malignant thyroid nodules."
+    },
+    "Toxic_Nodular_Goiter_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hyperthyroidism_cause",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "111591003",
+          "display": "Toxic multinodular goiter"
+        }
+      ],
+      "direct_transition": "Hyperthyroidism_Symptoms",
+      "requirement_number": "15",
+      "remarks": "Onsets toxic nodular goiter (mild or moderate severity). Assigns 'hyperthyroidism_cause' attribute to 'Toxic_Nodular_Goiter_Onset', then transitions to Hyperthyroidism_Symptoms."
+    },
+    "Severe_Toxic_Nodular_Goiter_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hyperthyroidism_cause",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "111591003",
+          "display": "Toxic multinodular goiter"
+        }
+      ],
+      "direct_transition": "Hyperthyroidism_Symptoms",
+      "requirement_number": "15",
+      "remarks": "Onsets toxic nodular goiter (severe severity). Assigns 'hyperthyroidism_cause' attribute to 'Severe_Toxic_Nodular_Goiter_Onset', then transitions to Hyperthyroidism_Symptoms."
+    },
+    "Thyroiditis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hyperthyroidism_cause",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "77586002",
+          "display": "Thyroiditis"
+        }
+      ],
+      "direct_transition": "Prescribe_Beta_Blocker",
+      "requirement_number": "32",
+      "remarks": "Thyroiditis is inflammation of the thyroid gland. Assigns 'hyperthyroidism_cause' attribute to 'Thyroiditis', then transitions to Prescribe_Beta_Blocker for symptomatic relief."
+    },
+    "Subclinical_Hyperthyroidism": {
+      "type": "SetAttribute",
+      "attribute": "subclinical_hyperthyroidism",
+      "value": "true",
+      "direct_transition": "Hyperthyroidism_Symptoms",
+      "requirement_number": "13, 31",
+      "remarks": "Sets the 'subclinical_hyperthyroidism' attribute to 'true', indicating the presence of subclinical hyperthyroidism. This attribute will be used in later states to determine treatment options. Then transitions to 'Hyperthyroidism_Symptoms'."
+    },
+    "Hyperthyroidism_Symptoms": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Hyperthyroidism_Symptom_1"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Uncontrolled_Hyperthyroidism"
+        }
+      ],
+      "requirement_number": "41",
+      "remarks": "Distributes patients into those presenting for medical care (85%) and those who will go untreated (15%)."
+    },
+    "Hyperthyroidism_Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Unexplained Weight Loss",
+      "probability": 0.7,
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_2",
+      "requirement_number": "16",
+      "remarks": "Unexplained weight loss is a common symptom of hyperthyroidism, affecting 70% of patients. Severity is in the range of 20-60%."
+    },
+    "Hyperthyroidism_Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Heart Palpitations",
+      "probability": 0.8,
+      "range": {
+        "low": 20,
+        "high": 70
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_3",
+      "requirement_number": "17",
+      "remarks": "Heart palpitations are a common symptom of hyperthyroidism, affecting 80% of patients. Severity is in the range of 20-70%."
+    },
+    "Hyperthyroidism_Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Insomnia",
+      "probability": 0.7,
+      "range": {
+        "low": 20,
+        "high": 80
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_4",
+      "requirement_number": "18",
+      "remarks": "Insomnia is a common symptom of hyperthyroidism, affecting 70% of patients. Severity is in the range of 20-80%."
+    },
+    "Hyperthyroidism_Symptom_4": {
+      "type": "Symptom",
+      "symptom": "Nervousness",
+      "probability": 0.7,
+      "range": {
+        "low": 20,
+        "high": 70
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_5",
+      "requirement_number": "18",
+      "remarks": "Nervousness is a common symptom of hyperthyroidism, affecting 70% of patients. Severity is in the range of 20-70%."
+    },
+    "Hyperthyroidism_Symptom_5": {
+      "type": "Symptom",
+      "symptom": "Anxiety",
+      "probability": 0.7,
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_6",
+      "requirement_number": "18",
+      "remarks": "Anxiety is a common symptom of hyperthyroidism, affecting 70% of patients. Severity is in the range of 20-60%."
+    },
+    "Hyperthyroidism_Symptom_6": {
+      "type": "Symptom",
+      "symptom": "Heat Intolerance",
+      "probability": 0.6,
+      "range": {
+        "low": 20,
+        "high": 50
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_7",
+      "requirement_number": "19",
+      "remarks": "Heat intolerance is a common symptom of hyperthyroidism, affecting 60% of patients. Severity is in the range of 20-50%."
+    },
+    "Hyperthyroidism_Symptom_7": {
+      "type": "Symptom",
+      "symptom": "Increased Sweating",
+      "probability": 0.6,
+      "range": {
+        "low": 20,
+        "high": 50
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_8",
+      "requirement_number": "19",
+      "remarks": "Increased sweating is a common symptom of hyperthyroidism, affecting 60% of patients. Severity is in the range of 20-50%."
+    },
+    "Hyperthyroidism_Symptom_8": {
+      "type": "Symptom",
+      "symptom": "Tremor",
+      "probability": 0.5,
+      "range": {
+        "low": 20,
+        "high": 80
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_9",
+      "requirement_number": "20",
+      "remarks": "Tremor is a common symptom of hyperthyroidism, affecting 50% of patients. Severity is in the range of 20-80%."
+    },
+    "Hyperthyroidism_Symptom_9": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "probability": 0.5,
+      "range": {
+        "low": 20,
+        "high": 80
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_10",
+      "requirement_number": "20",
+      "remarks": "Fatigue is a common symptom of hyperthyroidism, affecting 50% of patients. Severity is in the range of 20-80%."
+    },
+    "Hyperthyroidism_Symptom_10": {
+      "type": "Symptom",
+      "symptom": "Weakness",
+      "probability": 0.5,
+      "range": {
+        "low": 20,
+        "high": 80
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_11",
+      "requirement_number": "20",
+      "remarks": "Weakness is a common symptom of hyperthyroidism, affecting 50% of patients. Severity is in the range of 20-80%."
+    },
+    "Hyperthyroidism_Symptom_11": {
+      "type": "Symptom",
+      "symptom": "Hyperdefecation",
+      "probability": 0.25,
+      "range": {
+        "low": 20,
+        "high": 50
+      },
+      "direct_transition": "Hyperthyroidism_Symptom_12",
+      "requirement_number": "21",
+      "remarks": "Hyperdefecation is a less common symptom of hyperthyroidism, affecting 25% of patients. Severity is in the range of 20-50%."
+    },
+    "Hyperthyroidism_Symptom_12": {
+      "type": "Symptom",
+      "symptom": "Ophthalmopathy",
+      "probability": 0.33,
+      "range": {
+        "low": 20,
+        "high": 100
+      },
+      "direct_transition": "Categorize_Ophthalmopathy",
+      "requirement_number": "21",
+      "remarks": "Ophthalmopathy (eye problems) is a symptom primarily of Graves disease, affecting 33% of patients with Graves disease. Severity is in the range of 20-100%."
+    },
+    "Categorize_Ophthalmopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Symptom",
+            "symptom": "Ophthalmopathy",
+            "operator": ">=",
+            "value": 80
+          },
+          "transition": "Severe_Ophthalmopathy",
+          "requirement_number": "21",
+          "remarks": "Categorizes the patient's ophthalmopathy as severe if the severity is 80% or higher."
+        },
+        {
+          "transition": "Mild_Moderate_Ophthalmopathy",
+          "requirement_number": "21",
+          "remarks": "Categorizes the patient's ophthalmopathy as mild/moderate if the severity is less than 80%."
+        }
+      ],
+      "remarks": "This state categorizes the patient's ophthalmopathy as either mild/moderate or severe based on the symptom severity. This information will be used later to determine treatment options."
+    },
+    "Severe_Ophthalmopathy": {
+      "type": "SetAttribute",
+      "attribute": "ophthalmopathy_severity",
+      "value": "severe",
+      "direct_transition": "Delay_Until_Diagnosis",
+      "requirement_number": "21",
+      "remarks": "Sets the 'ophthalmopathy_severity' attribute to 'severe'. This attribute will be used later to guide treatment decisions. Transitions to Delay_Until_Diagnosis."
+    },
+    "Mild_Moderate_Ophthalmopathy": {
+      "type": "SetAttribute",
+      "attribute": "ophthalmopathy_severity",
+      "value": "mild_moderate",
+      "direct_transition": "Delay_Until_Diagnosis",
+      "requirement_number": "21",
+      "remarks": "Sets the 'ophthalmopathy_severity' attribute to 'mild_moderate'. This attribute will be used later to guide treatment decisions. Transitions to Delay_Until_Diagnosis."
+    },
+    "Delay_Until_Diagnosis": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Initial_Encounter",
+      "requirement_number": "22",
+      "remarks": "Delays for 1-3 weeks to allow symptoms to develop before the patient seeks medical care. Then transitions to Initial_Encounter."
+    },
+    "Initial_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Heart Palpitations",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Order_T3_and_FT4",
+      "requirement_number": "22",
+      "remarks": "Initial encounter for hyperthyroidism symptoms, most likely heart palpitations. Transitions to Order_T3_and_FT4."
+    },
+    "Order_T3_and_FT4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "T3"
+        },
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "FT4"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Overt_Hyperthyroidism_Labs"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Subclinical_Hyperthyroidism_Labs"
+        }
+      ],
+      "requirement_number": "23",
+      "remarks": "Orders T3 and/or FT4 tests. 85% of patients will have overt hyperthyroidism (high T3 and/or FT4) and 15% will have subclinical hyperthyroidism (normal T3 and FT4)."
+    },
+    "Overt_Hyperthyroidism_Labs": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "T3"
+        },
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "FT4"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "278644008",
+        "display": "High"
+      },
+      "direct_transition": "Order_TSH",
+      "requirement_number": "23",
+      "remarks": "Records elevated T3 and/or FT4 consistent with overt hyperthyroidism. Transitions to Order_TSH."
+    },
+    "Subclinical_Hyperthyroidism_Labs": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "T3"
+        },
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "FT4"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "177447007",
+        "display": "Normal"
+      },
+      "direct_transition": "Order_TSH",
+      "requirement_number": "23, 31",
+      "remarks": "Records normal T3 and FT4 consistent with subclinical hyperthyroidism. Transitions to Order_TSH."
+    },
+    "Order_TSH": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3948-4",
+          "display": "TSH"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "184330003",
+        "display": "Low"
+      },
+      "direct_transition": "Assess_For_Goiter",
+      "requirement_number": "22",
+      "remarks": "Records low TSH. Transitions to Assess_For_Goiter."
+    },
+    "Assess_For_Goiter": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ophthalmopathy_severity",
+                "operator": "==",
+                "value": "severe"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Tremor",
+                    "operator": ">",
+                    "value": 50
+                  },
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Heat Intolerance",
+                    "operator": ">",
+                    "value": 50
+                  },
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Increased Sweating",
+                    "operator": ">",
+                    "value": 50
+                  },
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Hyperdefecation",
+                    "operator": ">",
+                    "value": 50
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "nodules",
+                "operator": "==",
+                "value": "absent"
+              }
+            ]
+          },
+          "transition": "Graves_Disease_Diagnosis",
+          "requirement_number": "23, 24, 25",
+          "remarks": "If the patient has severe ophthalmopathy, at least one other clear sign of GD (tremor, heat intolerance, increased sweating, or hyperdefecation), and no nodules, transitions to Graves_Disease_Diagnosis, fulfilling requirements 23, 24, and 25."
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "goiter",
+                "operator": "==",
+                "value": "present"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "nodules",
+                "operator": "==",
+                "value": "present"
+              }
+            ]
+          },
+          "transition": "Order_TRAbs",
+          "requirement_number": "23",
+          "remarks": "If the patient has a palpable goiter and palpable nodules, transitions to Order_TRAbs, fulfilling requirement 23."
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "goiter",
+                "operator": "==",
+                "value": "present"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "nodules",
+                "operator": "==",
+                "value": "absent"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Tremor",
+                    "operator": ">",
+                    "value": 20
+                  },
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Heat Intolerance",
+                    "operator": ">",
+                    "value": 20
+                  },
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Increased Sweating",
+                    "operator": ">",
+                    "value": 20
+                  },
+                  {
+                    "condition_type": "Symptom",
+                    "symptom": "Hyperdefecation",
+                    "operator": ">",
+                    "value": 20
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Order_TRAbs",
+          "requirement_number": "23",
+          "remarks": "If the patient has a palpable goiter, no palpable nodules, and at least one unclear sign of GD (tremor, heat intolerance, increased sweating, or hyperdefecation), transitions to Order_TRAbs, fulfilling requirement 23."
+        },
+        {
+          "transition": "Order_RAIU",
+          "requirement_number": "24",
+          "remarks": "If the signs of Graves disease are unclear, transition to Order_RAIU, fulfilling requirement 24."
+        }
+      ],
+      "remarks": "Checks for signs and symptoms related to Graves' disease and palpable nodules, guiding the diagnostic pathway based on these findings."
+    },
+    "Order_TRAbs": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "49213-4",
+          "display": "TRAbs"
+        }
+      ],
+      "direct_transition": "Evaluate_TRAbs",
+      "requirement_number": "23",
+      "remarks": "Orders TRAbs. Transitions to Evaluate_TRAbs."
+    },
+    "Evaluate_TRAbs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.98,
+          "transition": "Graves_Disease_Diagnosis",
+          "requirement_number": "25",
+          "remarks": "If the patient has Graves disease, there is a 98% chance of having elevated TRAbs. Transitions to Graves_Disease_Diagnosis."
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Order_RAIU",
+          "requirement_number": "25",
+          "remarks": "If TRAbs are not elevated, transitions to Order_RAIU to continue the diagnostic workup."
+        }
+      ],
+      "remarks": "Evaluates TRAbs results. If elevated, transitions to Graves_Disease_Diagnosis. Otherwise, transitions to Order_RAIU."
+    },
+    "Graves_Disease_Diagnosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "35665009",
+          "display": "Graves' disease"
+        }
+      ],
+      "direct_transition": "End_Initial_Encounter",
+      "requirement_number": "24, 25",
+      "remarks": "Confirms the diagnosis of Graves disease. Transitions to End_Initial_Encounter."
+    },
+    "Order_RAIU": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "lactating",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "transition": "Thyroid_Ultrasound"
+        },
+        {
+          "transition": "Radioactive_Iodine_Uptake"
+        }
+      ],
+      "requirement_number": "26",
+      "remarks": "Orders RAIU. If the patient is pregnant or lactating, transitions to Thyroid_Ultrasound because RAIU is contraindicated. Otherwise, transitions to Radioactive_Iodine_Uptake."
+    },
+    "Radioactive_Iodine_Uptake": {
+      "type": "Observation",
+      "category": "procedure",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "17862-6",
+          "display": "RAIU"
+        }
+      ],
+      "direct_transition": "Evaluate_RAIU",
+      "requirement_number": "27, 28, 29",
+      "remarks": "Performs and records RAIU. Transitions to Evaluate_RAIU."
+    },
+    "Thyroid_Ultrasound": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "428561000124100",
+          "display": "Ultrasound of thyroid"
+        }
+      ],
+      "direct_transition": "Evaluate_Ultrasound",
+      "requirement_number": "26",
+      "remarks": "Performs Thyroid Ultrasound. Transitions to Evaluate_Ultrasound."
+    },
+    "Evaluate_RAIU": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperthyroidism_cause",
+                "operator": "==",
+                "value": "Graves_Disease"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "17862-6",
+                    "display": "RAIU"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": "441772007",
+                  "display": "Diffuse"
+                }
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.95,
+              "transition": "Graves_Disease_Diagnosis",
+              "requirement_number": "28"
+            },
+            {
+              "distribution": 0.05,
+              "transition": "End_Initial_Encounter",
+              "remarks": "5% probability for other diagnoses to be considered."
+            }
+          ],
+          "remarks": "If diffuse uptake (95% probability) and the likely diagnosis is Graves disease, transitions to Graves_Disease_Diagnosis. Otherwise, transitions to End_Initial_Encounter to consider other diagnoses."
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperthyroidism_cause",
+                "operator": "==",
+                "value": "Toxic_Nodular_Goiter_Onset"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "17862-6",
+                    "display": "RAIU"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": "260217007",
+                  "display": "Focal"
+                }
+              }
+            ]
+          },
+          "transition": "Toxic_Nodular_Goiter_Diagnosis"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperthyroidism_cause",
+                "operator": "==",
+                "value": "Thyroiditis"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "17862-6",
+                    "display": "RAIU"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": "184330003",
+                  "display": "Low"
+                }
+              }
+            ]
+          },
+          "transition": "Thyroiditis_Diagnosis"
+        },
+        {
+          "transition": "End_Initial_Encounter"
+        }
+      ],
+      "requirement_number": "27, 28, 29",
+      "remarks": "Evaluates RAIU results. If diffuse uptake and the likely diagnosis is Graves disease, transitions to Graves_Disease_Diagnosis. If focal uptake and the likely diagnosis is toxic nodular goiter, transitions to Toxic_Nodular_Goiter_Diagnosis. If low or absent uptake and the likely diagnosis is thyroiditis, transitions to Thyroiditis_Diagnosis. Otherwise, transitions to End_Initial_Encounter."
+    },
+    "Evaluate_Ultrasound": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperthyroidism_cause",
+                "operator": "==",
+                "value": "Toxic_Nodular_Goiter_Onset"
+              },
+              {
+                "condition_type": "Observation",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "428561000124100",
+                    "display": "Ultrasound of thyroid"
+                  }
+                ],
+                "operator": "==",
+                "value_code": {
+                  "system": "SNOMED-CT",
+                  "code": "442073007",
+                  "display": "Nodular"
+                }
+              }
+            ]
+          },
+          "transition": "Toxic_Nodular_Goiter_Diagnosis"
+        },
+        {
+          "transition": "End_Initial_Encounter"
+        }
+      ],
+      "requirement_number": "28",
+      "remarks": "Evaluates Thyroid Ultrasound results. If nodules are present and the likely diagnosis is toxic nodular goiter, transitions to Toxic_Nodular_Goiter_Diagnosis. Otherwise, transitions to End_Initial_Encounter."
+    },
+    "Toxic_Nodular_Goiter_Diagnosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "111591003",
+          "display": "Toxic multinodular goiter"
+        }
+      ],
+      "direct_transition": "End_Initial_Encounter",
+      "requirement_number": "28",
+      "remarks": "Confirms the diagnosis of toxic nodular goiter. Transitions to End_Initial_Encounter."
+    },
+    "Thyroiditis_Diagnosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "77586002",
+          "display": "Thyroiditis"
+        }
+      ],
+      "direct_transition": "End_Initial_Encounter",
+      "requirement_number": "29",
+      "remarks": "Confirms the diagnosis of thyroiditis. Transitions to End_Initial_Encounter."
+    },
+    "End_Initial_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Treatment_Decision",
+      "requirement_number": "31",
+      "remarks": "Ends the initial encounter. Transitions to Treatment_Decision."
+    },
+    "Treatment_Decision": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hyperthyroidism_cause",
+            "operator": "==",
+            "value": "Thyroiditis"
+          },
+          "transition": "Thyroiditis_Resolution"
+        },
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hyperthyroidism_cause",
+                "operator": "==",
+                "value": "Severe_Toxic_Nodular_Goiter_Onset"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ophthalmopathy_severity",
+                "operator": "==",
+                "value": "severe"
+              }
+            ]
+          },
+          "transition": "Delay_For_Surgery"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "subclinical_hyperthyroidism",
+            "operator": "==",
+            "value": "true"
+          },
+          "transition": "Watchful_Waiting"
+        },
+        {
+          "transition": "Prescribe_Antithyroid_Drugs"
+        }
+      ],
+      "requirement_number": "31, 32, 33, 38",
+      "remarks": "Determines the best course of treatment. If the cause is thyroiditis, transitions to Thyroiditis_Resolution. If the cause is severe toxic nodular goiter or the patient has severe ophthalmopathy, transitions to Delay_For_Surgery. If the patient has subclinical hyperthyroidism, transitions to Watchful_Waiting. Otherwise, transitions to Prescribe_Antithyroid_Drugs."
+    },
+    "Thyroiditis_Resolution": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 6,
+        "unit": "months"
+      },
+      "direct_transition": "End_Thyroiditis",
+      "requirement_number": "32",
+      "remarks": "Delays for 1-6 months to allow thyroiditis to resolve on its own. Transitions to End_Thyroiditis."
+    },
+    "End_Thyroiditis": {
+      "type": "ConditionEnd",
+      "condition_onset": "Thyroiditis",
+      "direct_transition": "Terminal",
+      "requirement_number": "32",
+      "remarks": "Ends the thyroiditis condition. Transitions to Terminal."
+    },
+    "Prescribe_Antithyroid_Drugs": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "antithyroid_drug",
+      "reason": "Graves_Disease",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1731406",
+          "display": "Methimazole10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Beta_Blocker_Decision",
+      "requirement_number": "33",
+      "remarks": "Prescribes methimazole, an antithyroid drug. Transitions to Beta_Blocker_Decision."
+    },
+    "Beta_Blocker_Decision": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Prescribe_Beta_Blocker"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Antithyroid_Drug_Monitoring"
+        }
+      ],
+      "requirement_number": "31",
+      "remarks": "Determines whether to prescribe a beta blocker for symptom relief. This occurs in 75% of hyperthyroidism cases. Transitions to Prescribe_Beta_Blocker (75% probability) or Antithyroid_Drug_Monitoring (25% probability)."
+    },
+    "Prescribe_Beta_Blocker": {
+      "type": "MedicationOrder",
+      "reason": "Heart Palpitations",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "308022",
+          "display": "Propranolol Hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Antithyroid_Drug_Monitoring",
+      "requirement_number": "31, 32",
+      "remarks": "Prescribes propranolol, a beta blocker for symptom relief. Transitions to Antithyroid_Drug_Monitoring."
+    },
+    "Antithyroid_Drug_Monitoring": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Followup_Encounter_1",
+      "requirement_number": "34",
+      "remarks": "Delays for one month for antithyroid drug monitoring. Transitions to Followup_Encounter_1."
+    },
+    "Followup_Encounter_1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Graves_Disease",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for follow up"
+        }
+      ],
+      "direct_transition": "Order_T3_and_FT4_Followup",
+      "requirement_number": "34",
+      "remarks": "First followup encounter to monitor antithyroid drug treatment. Transitions to Order_T3_and_FT4_Followup."
+    },
+    "Order_T3_and_FT4_Followup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "T3"
+        },
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "FT4"
+        }
+      ],
+      "direct_transition": "Evaluate_T3_and_FT4_Followup",
+      "requirement_number": "34",
+      "remarks": "Orders T3 and FT4 tests to monitor antithyroid drug treatment. Transitions to Evaluate_T3_and_FT4_Followup."
+    },
+    "Evaluate_T3_and_FT4_Followup": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "1988-5",
+                "display": "T3"
+              },
+              {
+                "system": "LOINC",
+                "code": "3024-7",
+                "display": "FT4"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": "177447007",
+              "display": "Normal"
+            }
+          },
+          "transition": "End_Followup_Encounter_1"
+        },
+        {
+          "transition": "Adjust_Antithyroid_Drug_Dose"
+        }
+      ],
+      "requirement_number": "34",
+      "remarks": "Evaluates T3 and FT4 results. If normal, transitions to End_Followup_Encounter_1. Otherwise, transitions to Adjust_Antithyroid_Drug_Dose."
+    },
+    "Adjust_Antithyroid_Drug_Dose": {
+      "type": "SetAttribute",
+      "attribute": "antithyroid_drug_monitoring_count",
+      "action": "increment",
+      "direct_transition": "Antithyroid_Drug_Monitoring",
+      "requirement_number": "34",
+      "remarks": "Increments the 'antithyroid_drug_monitoring_count' attribute, indicating another month of antithyroid drug monitoring. Transitions to Antithyroid_Drug_Monitoring."
+    },
+    "End_Followup_Encounter_1": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "antithyroid_drug_monitoring_count",
+            "operator": "<",
+            "value": 3
+          },
+          "transition": "Antithyroid_Drug_Monitoring"
+        },
+        {
+          "transition": "Evaluate_Antithyroid_Drug_Treatment"
+        }
+      ],
+      "requirement_number": "34",
+      "remarks": "Ends the first followup encounter. If the patient has had fewer than three months of monitoring, transitions to Antithyroid_Drug_Monitoring. Otherwise, transitions to Evaluate_Antithyroid_Drug_Treatment."
+    },
+    "Evaluate_Antithyroid_Drug_Treatment": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "months"
+      },
+      "direct_transition": "Evaluate_Antithyroid_Drug_Remission",
+      "requirement_number": "34",
+      "remarks": "Delays for 12 months to allow a total of 15 months of antithyroid drug treatment. Transitions to Evaluate_Antithyroid_Drug_Remission."
+    },
+    "Evaluate_Antithyroid_Drug_Remission": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.45,
+          "transition": "End_Antithyroid_Drug_Treatment"
+        },
+        {
+          "distribution": 0.55,
+          "transition": "Radioactive_Iodine_Therapy"
+        }
+      ],
+      "requirement_number": "34, 36",
+      "remarks": "Evaluates whether the antithyroid drug treatment has achieved remission. If so (45% probability), transitions to End_Antithyroid_Drug_Treatment. Otherwise (55% probability), transitions to Radioactive_Iodine_Therapy."
+    },
+    "End_Antithyroid_Drug_Treatment": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "antithyroid_drug",
+      "direct_transition": "Delay_Until_Relapse_Check",
+      "requirement_number": "33",
+      "remarks": "Discontinues the antithyroid drug. Transitions to Delay_Until_Relapse_Check."
+    },
+    "Delay_Until_Relapse_Check": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "Check_For_Relapse",
+      "requirement_number": "35",
+      "remarks": "Delays for one year after discontinuation of antithyroid drug treatment. Transitions to Check_For_Relapse."
+    },
+    "Check_For_Relapse": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.4,
+          "transition": "Hyperthyroidism_Relapse"
+        },
+        {
+          "distribution": 0.6,
+          "transition": "Delay_Until_Second_Relapse_Check"
+        }
+      ],
+      "requirement_number": "35",
+      "remarks": "Checks for relapse of hyperthyroidism. The relapse rate is 40% within the first year. If relapse occurs, transitions to Hyperthyroidism_Relapse. Otherwise, transitions to Delay_Until_Second_Relapse_Check."
+    },
+    "Delay_Until_Second_Relapse_Check": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 4,
+        "unit": "years"
+      },
+      "direct_transition": "Check_For_Second_Relapse",
+      "requirement_number": "36",
+      "remarks": "Delays for four years after the first relapse check. Transitions to Check_For_Second_Relapse."
+    },
+    "Check_For_Second_Relapse": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.6,
+          "transition": "Hyperthyroidism_Relapse"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Annual_TSH_Monitoring"
+        }
+      ],
+      "requirement_number": "36, 40",
+      "remarks": "Checks for relapse of hyperthyroidism. The cumulative relapse rate is 60% within five years. If relapse occurs, transitions to Hyperthyroidism_Relapse. Otherwise, transitions to Annual_TSH_Monitoring."
+    },
+    "Hyperthyroidism_Relapse": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hyperthyroidism_relapse",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "230268004",
+          "display": "Recurrent disease"
+        }
+      ],
+      "direct_transition": "Radioactive_Iodine_Therapy",
+      "requirement_number": "36",
+      "remarks": "Onsets relapse of hyperthyroidism. Transitions to Radioactive_Iodine_Therapy."
+    },
+    "Radioactive_Iodine_Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "128335006",
+          "display": "Radioactive iodine therapy"
+        }
+      ],
+      "direct_transition": "Increment_RAI_Counter",
+      "requirement_number": "36, 37",
+      "remarks": "Performs radioactive iodine therapy. Transitions to Increment_RAI_Counter."
+    },
+    "Increment_RAI_Counter": {
+      "type": "SetAttribute",
+      "attribute": "radioactive_iodine_treatments",
+      "action": "increment",
+      "direct_transition": "Evaluate_RAI_Remission",
+      "requirement_number": "37",
+      "remarks": "Increments the 'radioactive_iodine_treatments' counter to track the number of RAI treatments the patient has received. Transitions to Evaluate_RAI_Remission."
+    },
+    "Evaluate_RAI_Remission": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Delay_For_RAI_Evaluation",
+          "requirement_number": "37",
+          "remarks": "Radioactive iodine therapy has an 85% success rate in achieving remission. If successful, transitions to Delay_For_RAI_Evaluation."
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Delay_For_Surgery",
+          "requirement_number": "37",
+          "remarks": "If radioactive iodine therapy was not successful in achieving remission, transition to Delay_For_Surgery for surgical intervention."
+        }
+      ],
+      "remarks": "Evaluates the success of radioactive iodine therapy in achieving remission. If successful, transitions to Delay_For_RAI_Evaluation. Otherwise, transitions to Delay_For_Surgery."
+    },
+    "Delay_For_RAI_Evaluation": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Followup_Encounter_2",
+      "requirement_number": "37",
+      "remarks": "Delays for six months after radioactive iodine therapy to allow for evaluation of treatment effectiveness. Transitions to Followup_Encounter_2."
+    },
+    "Followup_Encounter_2": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Graves_Disease",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for follow up"
+        }
+      ],
+      "direct_transition": "Order_T3_and_FT4_Followup_2",
+      "requirement_number": "37",
+      "remarks": "Second followup encounter to monitor radioactive iodine treatment effectiveness. Transitions to Order_T3_and_FT4_Followup_2."
+    },
+    "Order_T3_and_FT4_Followup_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "T3"
+        },
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "FT4"
+        }
+      ],
+      "direct_transition": "Evaluate_T3_and_FT4_Followup_2",
+      "requirement_number": "37",
+      "remarks": "Orders T3 and FT4 tests to monitor radioactive iodine treatment effectiveness. Transitions to Evaluate_T3_and_FT4_Followup_2."
+    },
+    "Evaluate_T3_and_FT4_Followup_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "1988-5",
+                "display": "T3"
+              },
+              {
+                "system": "LOINC",
+                "code": "3024-7",
+                "display": "FT4"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": "177447007",
+              "display": "Normal"
+            }
+          },
+          "transition": "End_Followup_Encounter_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "radioactive_iodine_treatments",
+            "operator": "==",
+            "value": 2
+          },
+          "transition": "Delay_For_Surgery",
+          "requirement_number": "37",
+          "remarks": "If this is the patient's second RAI treatment and hyperthyroidism persists, they are referred for surgery. Transitions to Delay_For_Surgery."
+        },
+        {
+          "transition": "Repeat_RAI_Decision"
+        }
+      ],
+      "requirement_number": "37",
+      "remarks": "Evaluates T3 and FT4 results. If normal, transitions to End_Followup_Encounter_2. If not normal and the patient has already received two RAI treatments, transitions to Delay_For_Surgery. Otherwise, transitions to Repeat_RAI_Decision."
+    },
+    "Repeat_RAI_Decision": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "Radioactive_Iodine_Therapy"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Delay_For_Surgery"
+        }
+      ],
+      "requirement_number": "37",
+      "remarks": "If radioactive iodine therapy was not successful, the patient will either repeat RAI or have surgical intervention. Transitions to Radioactive_Iodine_Therapy (50% probability) or Delay_For_Surgery (50% probability)."
+    },
+    "End_Followup_Encounter_2": {
+      "type": "EncounterEnd",
+      "direct_transition": "Annual_TSH_Monitoring",
+      "requirement_number": "40",
+      "remarks": "Ends the second followup encounter. Transitions to Annual_TSH_Monitoring."
+    },
+    "Delay_For_Surgery": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Surgery_Encounter",
+      "requirement_number": "38",
+      "remarks": "Delays for 1-3 months to allow scheduling of surgery. Transitions to Surgery_Encounter."
+    },
+    "Surgery_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Graves_Disease",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183493006",
+          "display": "Encounter for surgical operation"
+        }
+      ],
+      "direct_transition": "Surgery_Decision",
+      "requirement_number": "38",
+      "remarks": "Encounter for surgical intervention. Transitions to Surgery_Decision."
+    },
+    "Surgery_Decision": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Thyroidectomy"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Radiofrequency_Ablation"
+        }
+      ],
+      "requirement_number": "38",
+      "remarks": "Decides which surgery will be performed. 80% of patients will undergo thyroidectomy, and 20% will receive radiofrequency ablation. Transitions to Thyroidectomy (80% probability) or Radiofrequency_Ablation (20% probability)."
+    },
+    "Thyroidectomy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "303961006",
+          "display": "Thyroidectomy"
+        }
+      ],
+      "direct_transition": "Evaluate_Thyroidectomy",
+      "requirement_number": "38",
+      "remarks": "Performs thyroidectomy. Transitions to Evaluate_Thyroidectomy."
+    },
+    "Radiofrequency_Ablation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "447339001",
+          "display": "Radiofrequency ablation of thyroid"
+        }
+      ],
+      "direct_transition": "Evaluate_RFA",
+      "requirement_number": "38",
+      "remarks": "Performs radiofrequency ablation. Transitions to Evaluate_RFA."
+    },
+    "Evaluate_Thyroidectomy": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.95,
+          "transition": "End_Surgery_Encounter"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Delay_For_Surgery"
+        }
+      ],
+      "requirement_number": "38",
+      "remarks": "Evaluates whether the thyroidectomy was successful. The cure rate is 95%. If successful, transitions to End_Surgery_Encounter. Otherwise, transitions to Delay_For_Surgery for repeat surgery."
+    },
+    "Evaluate_RFA": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "End_Surgery_Encounter"
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Thyroidectomy"
+        }
+      ],
+      "requirement_number": "38",
+      "remarks": "Evaluates whether the radiofrequency ablation was successful. The success rate is 75%. If successful, transitions to End_Surgery_Encounter. Otherwise, transitions to Thyroidectomy."
+    },
+    "End_Surgery_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Hypothyroidism_Risk",
+      "requirement_number": "39",
+      "remarks": "Ends the surgery encounter. Transitions to Hypothyroidism_Risk."
+    },
+    "Hypothyroidism_Risk": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.85,
+          "transition": "Hypothyroidism_Onset"
+        },
+        {
+          "distribution": 0.15,
+          "transition": "Annual_TSH_Monitoring"
+        }
+      ],
+      "requirement_number": "39, 40",
+      "remarks": "Determines whether the patient develops hypothyroidism following surgery. The risk is 85%. Transitions to Hypothyroidism_Onset (85% probability) or Annual_TSH_Monitoring (15% probability)."
+    },
+    "Hypothyroidism_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "3439004",
+          "display": "Hypothyroidism"
+        }
+      ],
+      "direct_transition": "Prescribe_Levothyroxine",
+      "requirement_number": "39",
+      "remarks": "Onsets hypothyroidism. Transitions to Prescribe_Levothyroxine."
+    },
+    "Prescribe_Levothyroxine": {
+      "type": "MedicationOrder",
+      "reason": "Hypothyroidism",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "856744",
+          "display": "Levothyroxine Sodium 0.025 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Annual_TSH_Monitoring",
+      "requirement_number": "39",
+      "remarks": "Prescribes levothyroxine for hypothyroidism. Transitions to Annual_TSH_Monitoring."
+    },
+    "Annual_TSH_Monitoring": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "years"
+      },
+      "direct_transition": "TSH_Monitoring_Encounter",
+      "requirement_number": "40",
+      "remarks": "Delays for one year for annual TSH monitoring. Transitions to TSH_Monitoring_Encounter."
+    },
+    "TSH_Monitoring_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Graves_Disease",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for follow up"
+        }
+      ],
+      "direct_transition": "Order_TSH_Followup",
+      "requirement_number": "40",
+      "remarks": "Annual followup encounter for TSH monitoring. Transitions to Order_TSH_Followup."
+    },
+    "Order_TSH_Followup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3948-4",
+          "display": "TSH"
+        }
+      ],
+      "direct_transition": "Evaluate_TSH_Followup",
+      "requirement_number": "40",
+      "remarks": "Orders TSH test to monitor for recurrence of hyperthyroidism or development of hypothyroidism. Transitions to Evaluate_TSH_Followup."
+    },
+    "Evaluate_TSH_Followup": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "3948-4",
+                "display": "TSH"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": "184330003",
+              "display": "Low"
+            }
+          },
+          "transition": "Hyperthyroidism_Relapse"
+        },
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "3948-4",
+                "display": "TSH"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": "278644008",
+              "display": "High"
+            }
+          },
+          "transition": "Hypothyroidism_Onset"
+        },
+        {
+          "transition": "End_TSH_Monitoring_Encounter"
+        }
+      ],
+      "requirement_number": "40",
+      "remarks": "Evaluates TSH results. If low, transitions to Hyperthyroidism_Relapse. If high, transitions to Hypothyroidism_Onset. If normal, transitions to End_TSH_Monitoring_Encounter."
+    },
+    "End_TSH_Monitoring_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Annual_TSH_Monitoring",
+      "requirement_number": "40",
+      "remarks": "Ends the TSH monitoring encounter. Transitions to Annual_TSH_Monitoring."
+    },
+    "Uncontrolled_Hyperthyroidism": {
+      "type": "Simple",
+      "direct_transition": "Long_Term_Complications",
+      "requirement_number": "41",
+      "remarks": "Represents patients with uncontrolled hyperthyroidism. Transitions to Long_Term_Complications."
+    },
+    "Long_Term_Complications": {
+      "type": "Delay",
+      "range": {
+        "low": 5,
+        "high": 20,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.25,
+          "transition": "Osteoporosis",
+          "requirement_number": "42",
+          "remarks": "25% of patients with uncontrolled hyperthyroidism will develop osteoporosis, a 25% increase compared to the general population."
+        },
+        {
+          "distribution": 0.125,
+          "transition": "Atrial_Fibrillation",
+          "requirement_number": "43",
+          "remarks": "12.5% of patients with uncontrolled hyperthyroidism will develop atrial fibrillation."
+        },
+        {
+          "distribution": 0.25,
+          "transition": "Cardiovascular_Death",
+          "requirement_number": "45",
+          "remarks": "25% of patients with uncontrolled hyperthyroidism will experience cardiovascular death, a 25% increase compared to the general population."
+        },
+        {
+          "distribution": 0.375,
+          "transition": "Terminal",
+          "remarks": "The remaining 37.5% of patients with uncontrolled hyperthyroidism will not experience these specific long-term complications."
+        }
+      ],
+      "requirement_number": "42, 43, 45",
+      "remarks": "Delays for 5-20 years to allow for the development of long-term complications of uncontrolled hyperthyroidism. 25% of patients will develop osteoporosis, 12.5% will develop atrial fibrillation, and 25% will experience cardiovascular death. Transitions to Osteoporosis (25% probability), Atrial_Fibrillation (12.5% probability), Cardiovascular_Death (25% probability) or Terminal (37.5% probability)."
+    },
+    "Osteoporosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "64859006",
+          "display": "Osteoporosis"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "requirement_number": "42",
+      "remarks": "Onsets osteoporosis. Transitions to Terminal."
+    },
+    "Atrial_Fibrillation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "49436004",
+          "display": "Atrial fibrillation"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "requirement_number": "43",
+      "remarks": "Onsets atrial fibrillation. Transitions to Terminal."
+    },
+    "Cardiovascular_Death": {
+      "type": "Death",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "53741008",
+          "display": "Death due to cardiovascular disease"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "requirement_number": "45",
+      "remarks": "Causes death from cardiovascular disease. Transitions to Terminal."
+    },
+    "Watchful_Waiting": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 4,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.0117,
+          "transition": "Prescribe_Antithyroid_Drugs",
+          "requirement_number": "30, 31",
+          "remarks": "3.5% annual progression rate to overt hyperthyroidism, meaning 0.035 / 12 = 0.00291666667 probability per month, or 0.00291666667 * 4 = 0.01166666668 probability over 4 months."
+        },
+        {
+          "distribution": 0.9883,
+          "transition": "Subclinical_HT_Followup_Encounter",
+          "requirement_number": "31",
+          "remarks": "If the patient does not progress to overt hyperthyroidism, they will continue with watchful waiting."
+        }
+      ],
+      "requirement_number": "31",
+      "remarks": "Represents the watchful waiting period for subclinical hyperthyroidism. Delays for 4 months, then transitions to Subclinical_HT_Followup_Encounter."
+    },
+    "Subclinical_HT_Followup_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Graves_Disease",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for follow up"
+        }
+      ],
+      "direct_transition": "Order_T3_and_FT4_Subclinical_Followup",
+      "requirement_number": "31",
+      "remarks": "Follow-up encounter for subclinical hyperthyroidism. Transitions to Order_T3_and_FT4_Subclinical_Followup."
+    },
+    "Order_T3_and_FT4_Subclinical_Followup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1988-5",
+          "display": "T3"
+        },
+        {
+          "system": "LOINC",
+          "code": "3024-7",
+          "display": "FT4"
+        }
+      ],
+      "direct_transition": "Evaluate_T3_and_FT4_Subclinical_Followup",
+      "requirement_number": "31",
+      "remarks": "Orders T3 and FT4 tests to monitor subclinical hyperthyroidism. Transitions to Evaluate_T3_and_FT4_Subclinical_Followup."
+    },
+    "Evaluate_T3_and_FT4_Subclinical_Followup": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Observation",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "1988-5",
+                "display": "T3"
+              },
+              {
+                "system": "LOINC",
+                "code": "3024-7",
+                "display": "FT4"
+              }
+            ],
+            "operator": "==",
+            "value_code": {
+              "system": "SNOMED-CT",
+              "code": "278644008",
+              "display": "High"
+            }
+          },
+          "transition": "Prescribe_Antithyroid_Drugs",
+          "requirement_number": "31",
+          "remarks": "If T3 and/or FT4 are now high, transitions to Prescribe_Antithyroid_Drugs."
+        },
+        {
+          "transition": "End_Subclinical_HT_Followup_Encounter",
+          "requirement_number": "31",
+          "remarks": "If T3 and FT4 remain normal, transitions to End_Subclinical_HT_Followup_Encounter."
+        }
+      ],
+      "remarks": "Evaluates T3 and FT4 results for subclinical hyperthyroidism. If T3 and/or FT4 are now high, transitions to Prescribe_Antithyroid_Drugs. Otherwise, transitions to End_Subclinical_HT_Followup_Encounter."
+    },
+    "End_Subclinical_HT_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Watchful_Waiting",
+      "requirement_number": "31",
+      "remarks": "Ends the subclinical hyperthyroidism follow-up encounter. Transitions back to Watchful_Waiting for continued monitoring."
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "requirement_number": "",
+      "remarks": "Represents the end of the module."
+    }
+  },
+  "gmf_version": 1
+}

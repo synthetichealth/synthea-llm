@@ -1,0 +1,1052 @@
+{
+    "name": "Hyperthyroidism",
+    "remarks": [
+        "Hyperthyroidism module covering diagnosis and treatment of Graves disease, Toxic Nodular Goiter, and Thyroiditis."
+    ],
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "remarks": [
+                "Initial state to determine if patient will develop Hyperthyroidism (HT).",
+                "Relative incidence of HT causes in 15-60 age group: GD: 75%, TNG: 17.5%, TI: 7.5%.",
+                "Relative incidence of HT causes in 60+ age group: GD: 64%, TNG: 30%, TI: 6%.",
+                "Lifetime risk of overt HT: Women: 3%, Men: 0.5%."
+            ],
+            "complex_transition": [
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Gender",
+                                "gender": "F"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": ">=",
+                                "quantity": 15,
+                                "unit": "years"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": "<=",
+                                "quantity": 60,
+                                "unit": "years"
+                            }
+                        ]
+                    },
+                    "distribution": 0.018,
+                    "transition": "HRF_Check"
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Gender",
+                                "gender": "M"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": ">=",
+                                "quantity": 15,
+                                "unit": "years"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": "<=",
+                                "quantity": 60,
+                                "unit": "years"
+                            }
+                        ]
+                    },
+                    "distribution": 0.0015,
+                    "transition": "HRF_Check"
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Gender",
+                                "gender": "F"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": ">",
+                                "quantity": 60,
+                                "unit": "years"
+                            }
+                        ]
+                    },
+                    "distribution": 0.012,
+                    "transition": "HRF_Check"
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Gender",
+                                "gender": "M"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": ">",
+                                "quantity": 60,
+                                "unit": "years"
+                            }
+                        ]
+                    },
+                    "distribution": 0.0012,
+                    "transition": "HRF_Check"
+                },
+                {
+                    "distribution": 0.9673,
+                    "transition": "Terminal"
+                }
+            ],
+            "requirement_number": "1, 2, 7, 8, 9, 10, 11, 12"
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "HRF_Check": {
+            "type": "Guard",
+            "allow": {
+                "condition_type": "And",
+                "conditions": [
+                    {
+                        "condition_type": "Age",
+                        "operator": ">=",
+                        "quantity": 15,
+                        "unit": "years"
+                    },
+                    {
+                        "condition_type": "Age",
+                        "operator": "<=",
+                        "quantity": 60,
+                        "unit": "years"
+                    }
+                ]
+            },
+            "direct_transition": "Hyperthyroidism_Risk_Factors",
+            "remarks": [
+                "Guard to ensure HT only considered for patients aged 15-60."
+            ],
+            "requirement_number": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12"
+        },
+        "Hyperthyroidism_Risk_Factors": {
+            "type": "Simple",
+            "remarks": [
+                "Check for hyperthyroidism risk factors (HRF) and modify the transition probabilities accordingly."
+            ],
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "HRF",
+                        "operator": "is not nil"
+                    },
+                    "transition": "Incidence_Distribution_HRF"
+                },
+                {
+                    "transition": "Incidence_Distribution"
+                }
+            ],
+            "requirement_number": "14"
+        },
+        "Incidence_Distribution": {
+            "type": "Simple",
+            "complex_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Gender",
+                        "gender": "F"
+                    },
+                    "distributions": [
+                        {
+                            "distribution": 0.45,
+                            "transition": "GD_Onset"
+                        },
+                        {
+                            "distribution": 0.105,
+                            "transition": "TNG_Onset"
+                        },
+                        {
+                            "distribution": 0.045,
+                            "transition": "TI_Onset"
+                        }
+                    ]
+                },
+                {
+                    "condition": {
+                        "condition_type": "Gender",
+                        "gender": "M"
+                    },
+                    "distributions": [
+                        {
+                            "distribution": 0.115,
+                            "transition": "GD_Onset"
+                        },
+                        {
+                            "distribution": 0.025,
+                            "transition": "TNG_Onset"
+                        },
+                        {
+                            "distribution": 0.01,
+                            "transition": "TI_Onset"
+                        }
+                    ]
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Gender",
+                                "gender": "F"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": ">",
+                                "quantity": 60,
+                                "unit": "years"
+                            }
+                        ]
+                    },
+                    "distributions": [
+                        {
+                            "distribution": 0.64,
+                            "transition": "GD_Onset"
+                        },
+                        {
+                            "distribution": 0.3,
+                            "transition": "TNG_Onset"
+                        },
+                        {
+                            "distribution": 0.06,
+                            "transition": "TI_Onset"
+                        }
+                    ]
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Gender",
+                                "gender": "M"
+                            },
+                            {
+                                "condition_type": "Age",
+                                "operator": ">",
+                                "quantity": 60,
+                                "unit": "years"
+                            }
+                        ]
+                    },
+                    "distributions": [
+                        {
+                            "distribution": 0.06,
+                            "transition": "GD_Onset"
+                        },
+                        {
+                            "distribution": 0.03,
+                            "transition": "TNG_Onset"
+                        },
+                        {
+                            "distribution": 0.012,
+                            "transition": "TI_Onset"
+                        }
+                    ]
+                }
+            ],
+            "remarks": [
+                "Distribute HT onset based on gender and age group."
+            ],
+            "requirement_number": "1, 2, 3, 7, 8, 9, 10, 11"
+        },
+        "Incidence_Distribution_HRF": {
+            "type": "Simple",
+            "complex_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Gender",
+                        "gender": "F"
+                    },
+                    "distributions": [
+                        {
+                            "distribution": 0.9,
+                            "transition": "GD_Onset"
+                        },
+                        {
+                            "distribution": 0.21,
+                            "transition": "TNG_Onset"
+                        },
+                        {
+                            "distribution": 0.09,
+                            "transition": "TI_Onset"
+                        }
+                    ]
+                },
+                {
+                    "condition": {
+                        "condition_type": "Gender",
+                        "gender": "M"
+                    },
+                    "distributions": [
+                        {
+                            "distribution": 0.23,
+                            "transition": "GD_Onset"
+                        },
+                        {
+                            "distribution": 0.05,
+                            "transition": "TNG_Onset"
+                        },
+                        {
+                            "distribution": 0.02,
+                            "transition": "TI_Onset"
+                        }
+                    ]
+                }
+            ],
+            "remarks": [
+                "Distribute HT onset based on gender and age group with HRF adjustment."
+            ],
+            "requirement_number": "14"
+        },
+        "GD_Onset": {
+            "type": "ConditionOnset",
+            "target_encounter": "DiagnosisEncounter",
+            "assign_to_attribute": "HT_Type",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "14140009",
+                    "display": "Graves disease"
+                }
+            ],
+            "direct_transition": "Symptom_1",
+            "remarks": [
+                "Onset of Graves Disease (GD), which accounts for 75% of HT cases in 15-60 age group."
+            ],
+            "requirement_number": "1, 4, 7, 10"
+        },
+        "TNG_Onset": {
+            "type": "ConditionOnset",
+            "target_encounter": "DiagnosisEncounter",
+            "assign_to_attribute": "HT_Type",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "30110001",
+                    "display": "Toxic Nodular Goiter"
+                }
+            ],
+            "direct_transition": "Symptom_1",
+            "remarks": [
+                "Onset of Toxic Nodular Goiter (TNG), which accounts for 17.5% of HT cases in 15-60 age group."
+            ],
+            "requirement_number": "2, 5, 8, 11"
+        },
+        "TI_Onset": {
+            "type": "ConditionOnset",
+            "target_encounter": "DiagnosisEncounter",
+            "assign_to_attribute": "HT_Type",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "30150001",
+                    "display": "Thyroiditis"
+                }
+            ],
+            "direct_transition": "Symptom_1",
+            "remarks": [
+                "Onset of Thyroiditis (TI), which accounts for 7.5% of HT cases in 15-60 age group."
+            ],
+            "requirement_number": "3, 6, 9, 12"
+        },
+        "Symptom_1": {
+            "type": "Symptom",
+            "symptom": "Unexplained Weight Loss",
+            "range": {
+                "low": 20,
+                "high": 60
+            },
+            "direct_transition": "Symptom_2",
+            "remarks": [
+                "Unexplained weight loss affects 70% of HT patients with severity ranging from 20% to 60%."
+            ],
+            "requirement_number": "15"
+        },
+        "Symptom_2": {
+            "type": "Symptom",
+            "symptom": "Heart Palpitations",
+            "range": {
+                "low": 20,
+                "high": 70
+            },
+            "direct_transition": "Symptom_3",
+            "remarks": [
+                "Heart palpitations affect 80% of HT patients with severity ranging from 20% to 70%."
+            ],
+            "requirement_number": "16"
+        },
+        "Symptom_3": {
+            "type": "Symptom",
+            "symptom": "Insomnia",
+            "range": {
+                "low": 20,
+                "high": 80
+            },
+            "direct_transition": "Symptom_4",
+            "remarks": [
+                "Insomnia, nervousness, and anxiety affect 70% of HT patients with severity ranging from 20% to 80%."
+            ],
+            "requirement_number": "17"
+        },
+        "Symptom_4": {
+            "type": "Symptom",
+            "symptom": "Heat Intolerance",
+            "range": {
+                "low": 20,
+                "high": 50
+            },
+            "direct_transition": "Symptom_5",
+            "remarks": [
+                "Heat intolerance and increased sweating affect 60% of HT patients with severity ranging from 20% to 50%."
+            ],
+            "requirement_number": "18"
+        },
+        "Symptom_5": {
+            "type": "Symptom",
+            "symptom": "Tremors",
+            "range": {
+                "low": 20,
+                "high": 80
+            },
+            "direct_transition": "Symptom_6",
+            "remarks": [
+                "Tremors, fatigue, or weakness affect 50% of HT patients with severity ranging from 20% to 80%."
+            ],
+            "requirement_number": "19"
+        },
+        "Symptom_6": {
+            "type": "Symptom",
+            "symptom": "Hyperdefecation",
+            "range": {
+                "low": 20,
+                "high": 50
+            },
+            "direct_transition": "DiagnosisEncounter",
+            "remarks": [
+                "Hyperdefecation affects 25% of HT patients with severity ranging from 20% to 50%."
+            ],
+            "requirement_number": "20"
+        },
+        "DiagnosisEncounter": {
+            "type": "Encounter",
+            "encounter_class": "ambulatory",
+            "reason": "HT_Type",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "185345009",
+                    "display": "Encounter for symptom"
+                }
+            ],
+            "direct_transition": "Testing_T3_FT4",
+            "remarks": [
+                "Encounter for the diagnosis of HT based on the symptoms presented."
+            ],
+            "requirement_number": "22"
+        },
+        "Testing_T3_FT4": {
+            "type": "MultiObservation",
+            "category": "laboratory",
+            "codes": [
+                {
+                    "system": "LOINC",
+                    "code": "3024-7",
+                    "display": "Total Triiodothyronine"
+                },
+                {
+                    "system": "LOINC",
+                    "code": "3026-2",
+                    "display": "Free T4"
+                }
+            ],
+            "observations": [
+                {
+                    "category": "laboratory",
+                    "codes": [
+                        {
+                            "system": "LOINC",
+                            "code": "3024-7",
+                            "display": "Total Triiodothyronine"
+                        }
+                    ],
+                    "unit": "nmol/L",
+                    "range": {
+                        "low": 5,
+                        "high": 10
+                    }
+                },
+                {
+                    "category": "laboratory",
+                    "codes": [
+                        {
+                            "system": "LOINC",
+                            "code": "3026-2",
+                            "display": "Free T4"
+                        }
+                    ],
+                    "unit": "pmol/L",
+                    "range": {
+                        "low": 10,
+                        "high": 20
+                    }
+                }
+            ],
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Observation",
+                        "codes": [
+                            {
+                                "system": "LOINC",
+                                "code": "3024-7",
+                                "display": "Total Triiodothyronine"
+                            }
+                        ],
+                        "operator": ">",
+                        "value": 10
+                    },
+                    "transition": "Overt_HT"
+                },
+                {
+                    "condition": {
+                        "condition_type": "Observation",
+                        "codes": [
+                            {
+                                "system": "LOINC",
+                                "code": "3026-2",
+                                "display": "Free T4"
+                            }
+                        ],
+                        "operator": ">",
+                        "value": 20
+                    },
+                    "transition": "Overt_HT"
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Observation",
+                                "codes": [
+                                    {
+                                        "system": "LOINC",
+                                        "code": "3024-7",
+                                        "display": "Total Triiodothyronine"
+                                    }
+                                ],
+                                "operator": "<=",
+                                "value": 10
+                            },
+                            {
+                                "condition_type": "Observation",
+                                "codes": [
+                                    {
+                                        "system": "LOINC",
+                                        "code": "3026-2",
+                                        "display": "Free T4"
+                                    }
+                                ],
+                                "operator": "<=",
+                                "value": 20
+                            }
+                        ]
+                    },
+                    "transition": "Subclinical_HT"
+                }
+            ],
+            "remarks": [
+                "Testing for T3 and FT4 levels to determine if HT is overt or subclinical.",
+                "Overt HT: Elevated T3 or FT4. Subclinical HT: Normal T3 and FT4."
+            ],
+            "requirement_number": "13, 22"
+        },
+        "Overt_HT": {
+            "type": "Simple",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Active Condition",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "14140009",
+                                "display": "Graves disease"
+                            }
+                        ]
+                    },
+                    "transition": "GD_Diagnosis"
+                },
+                {
+                    "condition": {
+                        "condition_type": "Active Condition",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "30110001",
+                                "display": "Toxic Nodular Goiter"
+                            }
+                        ]
+                    },
+                    "transition": "TNG_Diagnosis"
+                },
+                {
+                    "condition": {
+                        "condition_type": "Active Condition",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "30150001",
+                                "display": "Thyroiditis"
+                            }
+                        ]
+                    },
+                    "transition": "TI_Diagnosis"
+                }
+            ],
+            "remarks": [
+                "Determine the specific type of overt HT based on existing conditions."
+            ],
+            "requirement_number": "22, 23, 24"
+        },
+        "Subclinical_HT": {
+            "type": "Simple",
+            "distributed_transition": [
+                {
+                    "distribution": 0.965,
+                    "transition": "Watchful_Waiting"
+                },
+                {
+                    "distribution": 0.035,
+                    "transition": "Overt_HT"
+                }
+            ],
+            "remarks": [
+                "Subclinical HT patients have a 3.5% chance per year of progressing to overt HT.",
+                "If they progress, transition to the Overt_HT state for further diagnosis and treatment."
+            ],
+            "requirement_number": "30"
+        },
+        "Watchful_Waiting": {
+            "type": "Delay",
+            "range": {
+                "low": 4,
+                "high": 4,
+                "unit": "months"
+            },
+            "direct_transition": "Testing_T3_FT4",
+            "remarks": [
+                "Subclinical HT patients undergo watchful waiting with T3 and FT4 testing every 4 months."
+            ],
+            "requirement_number": "30"
+        },
+        "GD_Diagnosis": {
+            "type": "ConditionOnset",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "14140009",
+                    "display": "Graves disease"
+                }
+            ],
+            "direct_transition": "TRAb_Testing",
+            "remarks": [
+                "Diagnose Graves Disease (GD) based on elevated T3 and/or FT4 levels and clear physiologic signs."
+            ],
+            "requirement_number": "24"
+        },
+        "TNG_Diagnosis": {
+            "type": "ConditionOnset",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "30110001",
+                    "display": "Toxic Nodular Goiter"
+                }
+            ],
+            "direct_transition": "RAIU_Ultrasound",
+            "remarks": [
+                "Diagnose Toxic Nodular Goiter (TNG) based on elevated T3 and/or FT4 levels and presence of thyroid nodules."
+            ],
+            "requirement_number": "28"
+        },
+        "TI_Diagnosis": {
+            "type": "ConditionOnset",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "30150001",
+                    "display": "Thyroiditis"
+                }
+            ],
+            "direct_transition": "RAIU_Testing_TI",
+            "remarks": [
+                "Diagnose Thyroiditis (TI) based on elevated T3 and/or FT4 levels."
+            ],
+            "requirement_number": "29"
+        },
+        "TRAb_Testing": {
+            "type": "Observation",
+            "category": "laboratory",
+            "codes": [
+                {
+                    "system": "LOINC",
+                    "code": "11579-0",
+                    "display": "Thyrotropin receptor antibody"
+                }
+            ],
+            "unit": "IU/L",
+            "range": {
+                "low": 1,
+                "high": 40
+            },
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Observation",
+                        "codes": [
+                            {
+                                "system": "LOINC",
+                                "code": "11579-0",
+                                "display": "Thyrotropin receptor antibody"
+                            }
+                        ],
+                        "operator": ">",
+                        "value": 1
+                    },
+                    "transition": "GD_Treatment"
+                },
+                {
+                    "transition": "RAIU_Testing_GD"
+                }
+            ],
+            "remarks": [
+                "TRAb testing to confirm GD diagnosis with 98% probability."
+            ],
+            "requirement_number": "25"
+        },
+        "RAIU_Testing_GD": {
+            "type": "Observation",
+            "category": "imaging",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "168537006",
+                    "display": "Thyroid ultrasound"
+                }
+            ],
+            "unit": "%",
+            "range": {
+                "low": 10,
+                "high": 60
+            },
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Observation",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "168537006",
+                                "display": "Thyroid ultrasound"
+                            }
+                        ],
+                        "operator": ">",
+                        "value": 10
+                    },
+                    "transition": "GD_Treatment"
+                },
+                {
+                    "transition": "Thyroid_Ultrasound"
+                }
+            ],
+            "remarks": [
+                "RAIU testing for GD confirmation with 95% showing diffusely increased uptake."
+            ],
+            "requirement_number": "27"
+        },
+        "Thyroid_Ultrasound": {
+            "type": "Observation",
+            "category": "imaging",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "168537006",
+                    "display": "Thyroid ultrasound"
+                }
+            ],
+            "unit": "%",
+            "range": {
+                "low": 10,
+                "high": 30
+            },
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Active Condition",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "30150001",
+                                "display": "Thyroiditis"
+                            }
+                        ]
+                    },
+                    "transition": "TI_Treatment"
+                },
+                {
+                    "transition": "GD_Treatment"
+                }
+            ],
+            "remarks": [
+                "Thyroid ultrasound for non-pregnant/non-lactating patients with normal TRAbs.",
+                "Pregnant/lactating patients proceed to ultrasound with low/absent uptake."
+            ],
+            "requirement_number": "26"
+        },
+        "RAIU_Ultrasound": {
+            "type": "MultiObservation",
+            "category": "imaging",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "168537006",
+                    "display": "Thyroid ultrasound"
+                }
+            ],
+            "observations": [
+                {
+                    "category": "imaging",
+                    "codes": [
+                        {
+                            "system": "SNOMED-CT",
+                            "code": "422013005",
+                            "display": "Focal increased uptake"
+                        }
+                    ],
+                    "unit": "%",
+                    "range": {
+                        "low": 10,
+                        "high": 30
+                    }
+                }
+            ],
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Observation",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "422013005",
+                                "display": "Focal increased uptake"
+                            }
+                        ],
+                        "operator": ">",
+                        "value": 10
+                    },
+                    "transition": "TNG_Treatment"
+                },
+                {
+                    "transition": "TNG_Treatment"
+                }
+            ],
+            "remarks": [
+                "RAIU testing and ultrasound to confirm TNG diagnosis."
+            ],
+            "requirement_number": "28"
+        },
+        "RAIU_Testing_TI": {
+            "type": "Observation",
+            "category": "imaging",
+            "codes": [
+                {
+                    "system": "SNOMED-CT",
+                    "code": "168537006",
+                    "display": "Thyroid ultrasound"
+                }
+            ],
+            "unit": "%",
+            "range": {
+                "low": 0,
+                "high": 10
+            },
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Observation",
+                        "codes": [
+                            {
+                                "system": "SNOMED-CT",
+                                "code": "168537006",
+                                "display": "Thyroid ultrasound"
+                            }
+                        ],
+                        "operator": "<=",
+                        "value": 10
+                    },
+                    "transition": "TI_Treatment"
+                },
+                {
+                    "transition": "TI_Treatment"
+                }
+            ],
+            "remarks": [
+                "RAIU testing for TI confirmation with low or absent uptake."
+            ],
+            "requirement_number": "30"
+        },
+        "GD_Treatment": {
+            "type": "Simple",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Active Condition",
+                                "codes": [
+                                    {
+                                        "system": "SNOMED-CT",
+                                        "code": "30110001",
+                                        "display": "Toxic Nodular Goiter"
+                                    }
+                                ]
+                            },
+                            {
+                                "condition_type": "Attribute",
+                                "attribute": "HT_Severity",
+                                "operator": ">",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "transition": "Surgical_Intervention"
+                },
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Active Condition",
+                                "codes": [
+                                    {
+                                        "system": "SNOMED-CT",
+                                        "code": "30110001",
+                                        "display": "Graves disease"
+                                    }
+                                ]
+                            },
+                            {
+                                "condition_type": "Attribute",
+                                "attribute": "Ophthalmopathy",
+                                "operator": ">",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "transition": "Surgical_Intervention"
+                },
+                {
+                    "transition": "ATD_Treatment"
+                }
+            ],
+            "remarks": [
+                "Treatment for GD: ATDs are first-line therapy, except in cases of severe TNG or severe ophthalmopathy, where surgical intervention is preferred."
+            ],
+            "requirement_number": "33, 38"
+        },
+        "TNG_Treatment": {
+            "type": "Simple",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "And",
+                        "conditions": [
+                            {
+                                "condition_type": "Active Condition",
+                                "codes": [
+                                    {
+                                        "system": "SNOMED-CT",
+                                        "code": "30110001",
+                                        "display": "Toxic Nodular Goiter"
+                                    }
+                                ]
+                            },
+                            {
+                                "condition_type": "Attribute",
+                                "attribute": "HT_Severity",
+                                "operator": ">",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "transition": "Surgical_Intervention"
+                },
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "TNG_Severity",
+                        "operator": ">",
+                        "value": 80
+                    },
+                    "transition": "Determine_Severity"
+                },
+                {
+                    "transition": "ATD_Treatment"
+                }
+            ],
+            "remarks": [
+                "Treatment for TNG: ATDs are first-line therapy, except in cases of severe TNG where surgical intervention is preferred."
+            ],
+            "requirement_number": "33, 38"
+        },
+        "Determine_Severity": {
+            "type": "Simple",
+            "distributed_transition": [
+                {
+                    "distribution": 0.8,
+                    "transition": "Mild_Moderate_TNG"
+                },
+                {
+                    "distribution": 0.2,
+                    "transition": "Severe_TNG"
+                }
+            ],
+            "remarks": [
+                "Determine severity of TNG cases with 80% probability for mild/moderate and 20% for severe cases."
+            ],
+            "requirement_number": "15"
+        },
+        "Mild_Moderate_TNG": {
+            "type": "Simple",
+            "direct_transition": "ATD_Treatment"
+        },
+        "Surgical_Intervention": {
+            "type": "Procedure",
+            "codes": [
+                {
+                    "system": "SNOMED-CT"
+                }
+            ]
+        }
+    }
+}
